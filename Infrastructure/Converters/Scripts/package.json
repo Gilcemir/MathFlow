@@ -1,0 +1,10 @@
+{
+  "name": "omml-mathml-converter",
+  "version": "1.0.0",
+  "description": "OMML to MathML converter for C# integration",
+  "main": "converter.js",
+  "dependencies": {
+    "omml2mathml": "^1.3.0",
+    "xmldom": "^0.6.0"
+  }
+}

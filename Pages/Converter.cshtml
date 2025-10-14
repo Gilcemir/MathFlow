@@ -1,0 +1,137 @@
+@page
+@model MathFlow.Pages.Converter
+
+@{
+    ViewData["Title"] = "OMML to MathML Converter";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-file-earmark-word"></i>
+                        Word Document Converter
+                    </h3>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            <strong>Erro!</strong> @Model.ErrorMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <strong>Sucesso!</strong> @Model.SuccessMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form method="post" enctype="multipart/form-data" id="uploadForm">
+                        <div class="mb-4">
+                            <label for="fileInput" class="form-label fw-bold">
+                                Selecione um arquivo Word (.docx)
+                            </label>
+                            <input type="file" 
+                                   class="form-control" 
+                                   id="fileInput" 
+                                   name="uploadedFile" 
+                                   accept=".docx"
+                                   required>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Apenas arquivos .docx são aceitos
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" 
+                                    class="btn btn-primary btn-lg" 
+                                    id="convertBtn"
+                                    disabled>
+                                <span id="btnText">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                    Converter Documento
+                                </span>
+                                <span id="btnSpinner" class="d-none">
+                                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                                    Processando...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+
+                    @if (Model.ProcessingStats != null)
+                    {
+                        <div class="mt-4">
+                            <hr>
+                            <h5 class="mb-3">Estatísticas do Processamento</h5>
+                            <div class="row text-center">
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6 class="text-muted">Fórmulas Convertidas</h6>
+                                            <h3 class="text-primary">@Model.ProcessingStats.FormulasConverted</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6 class="text-muted">Tempo de Processamento</h6>
+                                            <h3 class="text-success">@Model.ProcessingStats.ProcessingTime</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6 class="text-muted">Tamanho do Arquivo</h6>
+                                            <h3 class="text-info">@Model.ProcessingStats.FileSize</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="mt-4 text-center text-muted">
+                <small>
+                    <i class="bi bi-shield-check"></i>
+                    Seus arquivos são processados localmente e não são armazenados
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const convertBtn = document.getElementById('convertBtn');
+        const uploadForm = document.getElementById('uploadForm');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+
+        // Habilita o botão quando um arquivo é selecionado
+        fileInput.addEventListener('change', function() {
+            convertBtn.disabled = !this.files.length;
+        });
+
+        // Mostra loading ao submeter
+        uploadForm.addEventListener('submit', function() {
+            convertBtn.disabled = true;
+            btnText.classList.add('d-none');
+            btnSpinner.classList.remove('d-none');
+        });
+    </script>
+}
