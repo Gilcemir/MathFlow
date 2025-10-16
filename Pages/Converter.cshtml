@@ -122,9 +122,13 @@
         const btnText = document.getElementById('btnText');
         const btnSpinner = document.getElementById('btnSpinner');
 
-        // Habilita o botão quando um arquivo é selecionado
+        // Habilita o botão e reseta o estado quando um arquivo é selecionado
         fileInput.addEventListener('change', function() {
             convertBtn.disabled = !this.files.length;
+            
+            // Reseta o estado visual do botão
+            btnText.classList.remove('d-none');
+            btnSpinner.classList.add('d-none');
         });
 
         // Mostra loading ao submeter
