@@ -7,12 +7,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddNodeJS();
+
+builder.Services.Configure<OutOfProcessNodeJSServiceOptions>(options =>
+{
+    options.Concurrency = Concurrency.MultiProcess;
+    options.ConcurrencyDegree = 4;
+    options.EnableFileWatching = false;
+});
 builder.Services.Configure<NodeJSProcessOptions>(options =>
 {
     options.ProjectPath = Path.Combine(Directory.GetCurrentDirectory(), "Infrastructure/Converters/Scripts");
 });
 
-builder.Services.AddScoped<WordProcessor>();
+builder.Services.AddSingleton<WordProcessor>();
 builder.Services.AddSingleton<OmmlToMathMLConverter>();
 
 var app = builder.Build();

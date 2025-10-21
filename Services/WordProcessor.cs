@@ -53,6 +53,7 @@ public class WordProcessor
                     docStream.SetLength(0);
                     docStream.Position = 0;
                     docXml.Save(docStream);
+                    Array.Clear(equations, 0, equations.Length);
                 }
 
                 doc.Save();
