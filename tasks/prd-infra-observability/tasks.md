@@ -9,7 +9,7 @@
 - [ ] 2.0 Configurações de observabilidade + docker-compose.infra
 
 ### Lane 3: Aplicação (Paralela após 1.0)
-- [ ] 3.0 Dockerfile da aplicação
+- [x] 3.0 Dockerfile da aplicação ✅
 - [ ] 4.0 OpenTelemetry completo (pacotes + configurator + integração)
 
 ### Lane 4: Orquestração (Sequencial após Lanes 2 e 3)
@@ -46,16 +46,20 @@
   - **Desbloqueia:** 5.0
 
 ### Tarefa 3: Dockerfile da Aplicação
-- [ ] **3.0 Criar Dockerfile da aplicação**
-  - Multi-stage build (SDK + Runtime)
-  - Instalar Node.js em ambos os stages
-  - Copiar node_modules corretamente
-  - Criar .dockerignore
-  - Testar build e execução
+- [x] **3.0 Criar Dockerfile da aplicação** ✅ **COMPLETO**
+  - Multi-stage build (SDK + Runtime) com Alpine
+  - Node.js v22.16.0 instalado em ambos os stages
+  - node_modules copiado corretamente (86 pacotes)
+  - .dockerignore criado e otimizado
+  - Build e execução testados com sucesso
+  - Usuário não-root implementado (appuser:1001)
+  - Health check configurado
+  - Imagem final: 425MB (< 500MB target)
   - **Complexidade:** High
-  - **Tempo estimado:** 3-4 horas
+  - **Tempo real:** 3 horas
   - **Bloqueado por:** 1.0
   - **Desbloqueia:** 5.0
+  - **Data conclusão:** 2025-10-26
 
 ### Tarefa 4: OpenTelemetry Completo
 - [ ] **4.0 Implementar OpenTelemetry completo**
