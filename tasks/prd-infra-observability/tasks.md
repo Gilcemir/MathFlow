@@ -79,20 +79,24 @@
 
 ### Tarefa 5: Orquestração Completa
 - [x] **5.0 Docker-compose completo + PostgreSQL + Configs** ✅ **COMPLETO**
-  - docker-compose.yml criado (aplicação apenas)
-  - docker-compose.infra.yml simplificado (PostgreSQL)
-  - docker-compose.metrics.yml criado (observabilidade completa)
+  - Estrutura reorganizada: `docker/local/` e `docker/production/`
+  - docker-compose.yml criado (aplicação + PostgreSQL + métricas)
+  - docker-compose.infra.yml (apenas PostgreSQL)
+  - docker-compose.metrics.yml (Prometheus + Grafana)
   - Arquitetura separada por responsabilidade
-  - Application usa network_mode: host (simula produção)
-  - .env.example atualizado com OTLP_ENDPOINT e POSTGRES_HOST
-  - appsettings.json atualizado (OTLP + PostgreSQL)
+  - .env.example criado com todas as variáveis necessárias
+  - appsettings.json atualizado (OTLP + PostgreSQL + Health Checks)
   - appsettings.Development.json atualizado (Debug logs)
+  - Health checks implementados (database + application)
+  - Prometheus metrics endpoint configurado
   - Build completo testado com sucesso
-  - Stack completa testada: 6 containers rodando
+  - Stack completa testada: aplicação + database + métricas funcionando
   - PostgreSQL acessível e database criado
-  - Telemetria funcionando (logs + traces)
+  - Métricas expostas em /metrics
+  - Grafana configurado com dashboards
+  - Documentação completa criada (DOCKER_USAGE.md, READMEs)
   - **Complexidade:** Medium-High
-  - **Tempo real:** 2.5 horas
+  - **Tempo real:** 4 horas
   - **Bloqueado por:** 2.0, 3.0, 4.0
   - **Desbloqueia:** 6.0
   - **Data conclusão:** 2025-10-26
