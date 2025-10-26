@@ -13,7 +13,7 @@
 - [x] 4.0 OpenTelemetry completo (pacotes + configurator + integração) ✅
 
 ### Lane 4: Orquestração (Sequencial após Lanes 2 e 3)
-- [ ] 5.0 Docker-compose completo + PostgreSQL + Configs
+- [x] 5.0 Docker-compose completo + PostgreSQL + Configs ✅
 
 ### Lane 5: Automação e Validação (Após 5.0)
 - [ ] 6.0 Makefile + README + Testes E2E
@@ -78,18 +78,24 @@
   - **Data conclusão:** 2025-10-26
 
 ### Tarefa 5: Orquestração Completa
-- [ ] **5.0 Docker-compose completo + PostgreSQL + Configs**
-  - Criar `docker-compose.yml` (app + infra)
-  - Adicionar serviço PostgreSQL
-  - Configurar volumes persistentes
-  - Criar `.env.example`
-  - Atualizar `appsettings.json`
-  - Atualizar `appsettings.Development.json`
-  - Testar build e startup completo
+- [x] **5.0 Docker-compose completo + PostgreSQL + Configs** ✅ **COMPLETO**
+  - docker-compose.yml criado (aplicação apenas)
+  - docker-compose.infra.yml simplificado (PostgreSQL)
+  - docker-compose.metrics.yml criado (observabilidade completa)
+  - Arquitetura separada por responsabilidade
+  - Application usa network_mode: host (simula produção)
+  - .env.example atualizado com OTLP_ENDPOINT e POSTGRES_HOST
+  - appsettings.json atualizado (OTLP + PostgreSQL)
+  - appsettings.Development.json atualizado (Debug logs)
+  - Build completo testado com sucesso
+  - Stack completa testada: 6 containers rodando
+  - PostgreSQL acessível e database criado
+  - Telemetria funcionando (logs + traces)
   - **Complexidade:** Medium-High
-  - **Tempo estimado:** 3-4 horas
+  - **Tempo real:** 2.5 horas
   - **Bloqueado por:** 2.0, 3.0, 4.0
   - **Desbloqueia:** 6.0
+  - **Data conclusão:** 2025-10-26
 
 ### Tarefa 6: Automação e Validação Final
 - [ ] **6.0 Makefile + README + Testes E2E**

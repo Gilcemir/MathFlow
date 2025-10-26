@@ -11,7 +11,7 @@ services:
       - "8888:8888"   # Prometheus metrics (collector)
       - "8889:8889"   # Prometheus exporter
     networks:
-      - mathflow-network
+      - mathflow
 
   loki:
     build:
@@ -23,7 +23,7 @@ services:
     volumes:
       - loki-data:/loki
     networks:
-      - mathflow-network
+      - mathflow
 
   prometheus:
     build:
@@ -35,7 +35,7 @@ services:
     volumes:
       - prometheus-data:/prometheus
     networks:
-      - mathflow-network
+      - mathflow
 
   grafana:
     build:
@@ -50,14 +50,14 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
     networks:
-      - mathflow-network
+      - mathflow
     depends_on:
       - prometheus
       - loki
 
 networks:
-  mathflow-network:
-    driver: bridge
+  mathflow:
+    external: true
 
 volumes:
   loki-data:

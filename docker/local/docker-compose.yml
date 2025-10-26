@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    container_name: mathflow-app
+    ports:
+      - "5124:5124"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+      - Otlp__Endpoint=${OTLP_ENDPOINT:-http://mathflow-otel-collector:4317}
+      - ConnectionStrings__DefaultConnection=Host=${POSTGRES_HOST:-mathflow-postgres};Port=${POSTGRES_PORT:-5432};Database=${POSTGRES_DB:-mathflow_db};Username=${POSTGRES_USER:-mathflow};Password=${POSTGRES_PASSWORD:-mathflow_password_change_me}
+    networks:
+      - mathflow
+
+networks:
+  mathflow:
+    external: true
