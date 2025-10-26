@@ -1,10 +1,10 @@
 using System.Diagnostics;
-using MathFlow.Services;
+using MathFlow.Services.Coverters;
 using MathFlow.Shared.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MathFlow.Pages;
+namespace MathFlow.Pages.Converters;
 
 public class Converter : PageModel
 {
