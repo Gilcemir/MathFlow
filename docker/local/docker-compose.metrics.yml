@@ -4,7 +4,7 @@ services:
     container_name: mathflow-otel-collector
     command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
-      - ./docker/infra/otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+      - ../../docker/infra/otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml
     ports:
       - "4317:4317"   # OTLP gRPC
       - "4318:4318"   # OTLP HTTP
@@ -15,7 +15,7 @@ services:
 
   loki:
     build:
-      context: ./docker/infra/loki
+      context: ../../docker/infra/loki
       dockerfile: Dockerfile
     container_name: mathflow-loki
     ports:
@@ -27,7 +27,7 @@ services:
 
   prometheus:
     build:
-      context: ./docker/infra/prometheus
+      context: ../../docker/infra/prometheus
       dockerfile: Dockerfile
     container_name: mathflow-prometheus
     ports:
@@ -39,7 +39,7 @@ services:
 
   grafana:
     build:
-      context: ./docker/infra/grafana
+      context: ../../docker/infra/grafana
       dockerfile: Dockerfile
     container_name: mathflow-grafana
     ports:
