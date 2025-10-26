@@ -1,0 +1,65 @@
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector:0.89.0
+    container_name: mathflow-otel-collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./docker/infra/otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+      - "8888:8888"   # Prometheus metrics (collector)
+      - "8889:8889"   # Prometheus exporter
+    networks:
+      - mathflow-network
+
+  loki:
+    build:
+      context: ./docker/infra/loki
+      dockerfile: Dockerfile
+    container_name: mathflow-loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki-data:/loki
+    networks:
+      - mathflow-network
+
+  prometheus:
+    build:
+      context: ./docker/infra/prometheus
+      dockerfile: Dockerfile
+    container_name: mathflow-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus-data:/prometheus
+    networks:
+      - mathflow-network
+
+  grafana:
+    build:
+      context: ./docker/infra/grafana
+      dockerfile: Dockerfile
+    container_name: mathflow-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - mathflow-network
+    depends_on:
+      - prometheus
+      - loki
+
+networks:
+  mathflow-network:
+    driver: bridge
+
+volumes:
+  loki-data:
+  prometheus-data:
+  grafana-data:
