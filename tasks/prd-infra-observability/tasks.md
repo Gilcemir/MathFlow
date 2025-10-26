@@ -1,0 +1,151 @@
+# Implementação: Reestruturação e Stack de Observabilidade - Resumo de Tarefas
+
+## Análise de Paralelização
+
+### Lane 1: Reestruturação (Sequencial - Base)
+- [ ] 1.0 Reestruturar pastas + Criar projetos de teste
+
+### Lane 2: Infraestrutura (Paralela após 1.0)
+- [ ] 2.0 Configurações de observabilidade + docker-compose.infra
+
+### Lane 3: Aplicação (Paralela após 1.0)
+- [ ] 3.0 Dockerfile da aplicação
+- [ ] 4.0 OpenTelemetry completo (pacotes + configurator + integração)
+
+### Lane 4: Orquestração (Sequencial após Lanes 2 e 3)
+- [ ] 5.0 Docker-compose completo + PostgreSQL + Configs
+
+### Lane 5: Automação e Validação (Após 5.0)
+- [ ] 6.0 Makefile + README + Testes E2E
+
+## Tarefas Consolidadas
+
+### Tarefa 1: Reestruturação + Projetos de Teste
+- [ ] **1.0 Reestruturar pastas e criar estrutura de testes**
+  - Criar estrutura `src/`, `tests/`, `docker/`
+  - Mover arquivos para `src/MathFlow/`
+  - Criar `MathFlow.UnitTests.csproj`
+  - Criar `MathFlow.IntegrationTests.csproj`
+  - Validar compilação
+  - **Complexidade:** Medium
+  - **Tempo estimado:** 3-4 horas
+  - **Bloqueado por:** Nenhum
+  - **Desbloqueia:** Todas as outras tarefas
+
+### Tarefa 2: Infraestrutura de Observabilidade
+- [ ] **2.0 Configurações de observabilidade + docker-compose.infra**
+  - OTEL Collector config
+  - Loki config + Dockerfile
+  - Prometheus config + Dockerfile
+  - Grafana datasources + Dockerfile
+  - Criar `docker-compose.infra.yml`
+  - Testar stack de infra isoladamente
+  - **Complexidade:** Medium-High
+  - **Tempo estimado:** 4-5 horas
+  - **Bloqueado por:** 1.0
+  - **Desbloqueia:** 5.0
+
+### Tarefa 3: Dockerfile da Aplicação
+- [ ] **3.0 Criar Dockerfile da aplicação**
+  - Multi-stage build (SDK + Runtime)
+  - Instalar Node.js em ambos os stages
+  - Copiar node_modules corretamente
+  - Criar .dockerignore
+  - Testar build e execução
+  - **Complexidade:** High
+  - **Tempo estimado:** 3-4 horas
+  - **Bloqueado por:** 1.0
+  - **Desbloqueia:** 5.0
+
+### Tarefa 4: OpenTelemetry Completo
+- [ ] **4.0 Implementar OpenTelemetry completo**
+  - Adicionar 8 pacotes NuGet ao .csproj
+  - Criar `OpenTelemetryConfigurator.cs`
+  - Configurar logs, traces, métricas
+  - Configurar exporters OTLP
+  - Integrar no `Program.cs` (`builder.AddOpenTelemetry()`)
+  - Testar localmente
+  - **Complexidade:** Medium
+  - **Tempo estimado:** 3-4 horas
+  - **Bloqueado por:** 1.0
+  - **Desbloqueia:** 5.0
+
+### Tarefa 5: Orquestração Completa
+- [ ] **5.0 Docker-compose completo + PostgreSQL + Configs**
+  - Criar `docker-compose.yml` (app + infra)
+  - Adicionar serviço PostgreSQL
+  - Configurar volumes persistentes
+  - Criar `.env.example`
+  - Atualizar `appsettings.json`
+  - Atualizar `appsettings.Development.json`
+  - Testar build e startup completo
+  - **Complexidade:** Medium-High
+  - **Tempo estimado:** 3-4 horas
+  - **Bloqueado por:** 2.0, 3.0, 4.0
+  - **Desbloqueia:** 6.0
+
+### Tarefa 6: Automação e Validação Final
+- [ ] **6.0 Makefile + README + Testes E2E**
+  - Criar Makefile com comandos úteis
+  - Atualizar README completo
+  - Documentar comandos e acesso aos serviços
+  - Testar `make docker-up`
+  - Verificar telemetria no Grafana
+  - Verificar logs no Loki
+  - Verificar métricas no Prometheus
+  - Testar conversão de documentos
+  - **Complexidade:** Medium
+  - **Tempo estimado:** 4-5 horas
+  - **Bloqueado por:** 5.0
+  - **Desbloqueia:** Nenhum (finalização)
+
+## Estatísticas
+
+- **Total de tarefas:** 6 (consolidadas)
+- **Lanes paralelas:** 3 (após reestruturação)
+- **Caminho crítico:** 1.0 → 4.0 → 5.0 → 6.0
+- **Estimativa sequencial:** ~24 horas
+- **Estimativa com paralelização:** ~14-16 horas
+
+## Dependências Críticas
+
+```
+1.0 (Reestruturação + Testes)
+├── 2.0 (Configs Observabilidade + docker-compose.infra)
+├── 3.0 (Dockerfile app)
+└── 4.0 (OpenTelemetry completo)
+
+2.0 + 3.0 + 4.0 → 5.0 (docker-compose completo + PostgreSQL + Configs)
+                  └── 6.0 (Makefile + README + Testes E2E)
+```
+
+## Notas de Implementação
+
+### Paralelização Recomendada
+
+**Após completar 1.0**, executar em paralelo:
+- **Lane 1:** 2.0 (Infraestrutura)
+- **Lane 2:** 3.0 (Dockerfile)
+- **Lane 3:** 4.0 (OpenTelemetry)
+
+**Após convergência (2.0, 3.0, 4.0):**
+- Executar 5.0 (Orquestração completa)
+
+**Após 5.0:**
+- Executar 6.0 (Automação e validação final)
+
+### Pontos de Atenção
+
+1. **Tarefa 1.0** é bloqueante para tudo - prioridade máxima
+2. **Tarefa 3.0** (Dockerfile) é a mais complexa - alocar tempo adequado
+3. **Tarefa 5.0** é ponto de convergência - validar bem as dependências
+4. **Tarefa 6.0** é validação final - não pular
+
+### Critérios de Aceitação Globais
+
+- ✅ Aplicação compila e executa após reestruturação
+- ✅ `make docker-up` sobe toda a stack sem erros
+- ✅ Grafana exibe logs e métricas da aplicação
+- ✅ Conversão de documentos funciona no container
+- ✅ README documentado e atualizado
+- ✅ Todos os serviços acessíveis nas portas documentadas
