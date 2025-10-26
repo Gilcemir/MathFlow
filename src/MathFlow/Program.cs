@@ -1,5 +1,6 @@
 using Jering.Javascript.NodeJS;
 using MathFlow.Infrastructure.Converters;
+using MathFlow.Infrastructure.Observability;
 using MathFlow.Services;
 using MathFlow.Services.Coverters;
 
@@ -8,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddNodeJS();
+
+// Configure OpenTelemetry
+builder.AddOpenTelemetry();
 
 builder.Services.Configure<OutOfProcessNodeJSServiceOptions>(options =>
 {
