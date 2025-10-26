@@ -49,8 +49,6 @@ public static class OpenTelemetryConfigurator
     /// </summary>
     private static void ConfigureLogging(OpenTelemetryLoggerOptions logging, string? otlpEndpoint)
     {
-        logging.AddConsoleExporter();
-        
         if (!string.IsNullOrEmpty(otlpEndpoint))
         {
             logging.AddOtlpExporter(opts =>
