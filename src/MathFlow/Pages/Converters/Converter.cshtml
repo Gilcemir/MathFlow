@@ -131,11 +131,64 @@
             btnSpinner.classList.add('d-none');
         });
 
-        // Mostra loading ao submeter
-        uploadForm.addEventListener('submit', function() {
+        // Intercepta o submit do formulário para usar Fetch API
+        uploadForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Mostra loading
             convertBtn.disabled = true;
             btnText.classList.add('d-none');
             btnSpinner.classList.remove('d-none');
+
+            try {
+                const formData = new FormData(uploadForm);
+                
+                const response = await fetch(uploadForm.action || window.location.href, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const contentType = response.headers.get('content-type');
+                
+                // Verifica se a resposta é um arquivo (download)
+                if (contentType && contentType.includes('application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
+                    const blob = await response.blob();
+                    const contentDisposition = response.headers.get('content-disposition');
+                    let filename = 'documento.docx';
+                    
+                    if (contentDisposition) {
+                        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                        if (filenameMatch && filenameMatch[1]) {
+                            filename = filenameMatch[1].replace(/['"]/g, '');
+                        }
+                    }
+                    
+                    // Cria um link temporário para download
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } else {
+                    // Se não for um arquivo, recarrega a página para mostrar mensagens de erro
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error('Erro ao processar o arquivo:', error);
+                alert('Erro ao processar o arquivo. Por favor, tente novamente.');
+            } finally {
+                // Reseta o estado do botão
+                convertBtn.disabled = false;
+                btnText.classList.remove('d-none');
+                btnSpinner.classList.add('d-none');
+            }
         });
     </script>
 }
