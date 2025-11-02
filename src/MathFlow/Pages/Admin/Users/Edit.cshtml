@@ -1,0 +1,70 @@
+@page
+@model MathFlow.Pages.Admin.Users.EditModel
+@{
+    ViewData["Title"] = "Edit User Roles";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2>@ViewData["Title"]</h2>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">User Information</h5>
+                    
+                    <dl class="row mb-4">
+                        <dt class="col-sm-3">Username</dt>
+                        <dd class="col-sm-9">@Model.UserName</dd>
+
+                        <dt class="col-sm-3">Email</dt>
+                        <dd class="col-sm-9">@Model.Email</dd>
+
+                        <dt class="col-sm-3">Current Roles</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.CurrentRoles.Any())
+                            {
+                                foreach (var role in Model.CurrentRoles)
+                                {
+                                    <span class="badge bg-primary me-1">@role</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">No roles assigned</span>
+                            }
+                        </dd>
+                    </dl>
+
+                    <hr />
+
+                    <h5 class="card-title">Assign New Role</h5>
+                    
+                    <form method="post">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Input.SelectedRole" class="form-label">Select Role</label>
+                            <select asp-for="Input.SelectedRole" asp-items="Model.AvailableRoles" class="form-select">
+                                <option value="">-- Select a role --</option>
+                            </select>
+                            <span asp-validation-for="Input.SelectedRole" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                Note: Assigning a new role will replace all existing roles. Master admin role cannot be assigned through this interface.
+                            </small>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Update Role</button>
+                            <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

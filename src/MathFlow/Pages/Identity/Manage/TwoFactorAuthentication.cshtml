@@ -1,0 +1,67 @@
+@page
+@model MathFlow.Pages.Identity.Manage.TwoFactorAuthenticationModel
+@{
+    ViewData["Title"] = "Two-Factor Authentication";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2>@ViewData["Title"]</h2>
+            
+            @if (TempData["StatusMessage"] != null)
+            {
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    @TempData["StatusMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Two-Factor Authentication Status</h5>
+                    
+                    @if (Model.TwoFactorEnabled)
+                    {
+                        <div class="alert alert-success" role="alert">
+                            <strong>Two-Factor Authentication is enabled.</strong>
+                            <p class="mb-0">Your account is protected with an additional layer of security.</p>
+                        </div>
+
+                        @if (Model.IsMasterAdmin)
+                        {
+                            <div class="alert alert-warning" role="alert">
+                                <strong>Master Admin Protection</strong>
+                                <p class="mb-0">As a master admin, you cannot disable two-factor authentication.</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <form method="post" asp-page-handler="Disable">
+                                <div class="alert alert-warning" role="alert">
+                                    <strong>Warning:</strong> Disabling two-factor authentication will make your account less secure.
+                                </div>
+                                <button type="submit" class="btn btn-danger">Disable Two-Factor Authentication</button>
+                            </form>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            <strong>Two-Factor Authentication is disabled.</strong>
+                            <p class="mb-0">Your account security could be improved by enabling 2FA.</p>
+                        </div>
+
+                        <p>To enable two-factor authentication, you will need to set it up during your next login or by contacting support.</p>
+                    }
+
+                    <hr />
+
+                    <div class="d-grid">
+                        <a asp-page="./Index" class="btn btn-secondary">Back to Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

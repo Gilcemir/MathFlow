@@ -1,0 +1,79 @@
+@page
+@model MathFlow.Pages.Identity.Manage.IndexModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2>@ViewData["Title"]</h2>
+            
+            @if (TempData["StatusMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["StatusMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Account Information</h5>
+                    
+                    <dl class="row">
+                        <dt class="col-sm-3">Username</dt>
+                        <dd class="col-sm-9">@Model.Username</dd>
+
+                        <dt class="col-sm-3">Email</dt>
+                        <dd class="col-sm-9">
+                            @Model.Email
+                            @if (Model.EmailConfirmed)
+                            {
+                                <span class="badge bg-success">Confirmed</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">Not Confirmed</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Two-Factor Auth</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.TwoFactorEnabled)
+                            {
+                                <span class="badge bg-success">Enabled</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Disabled</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Roles</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Roles != null && Model.Roles.Any())
+                            {
+                                foreach (var role in Model.Roles)
+                                {
+                                    <span class="badge bg-primary me-1">@role</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">No roles assigned</span>
+                            }
+                        </dd>
+                    </dl>
+
+                    <hr />
+
+                    <div class="d-grid gap-2">
+                        <a asp-page="./ChangePassword" class="btn btn-primary">Change Password</a>
+                        <a asp-page="./TwoFactorAuthentication" class="btn btn-secondary">Manage Two-Factor Authentication</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

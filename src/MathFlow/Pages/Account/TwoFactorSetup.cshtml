@@ -1,0 +1,81 @@
+@page
+@model TwoFactorSetupModel
+@{
+    ViewData["Title"] = "Set Up Two-Factor Authentication";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2>@ViewData["Title"]</h2>
+                    <p class="text-muted">Secure your account with two-factor authentication</p>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="bi bi-shield-check"></i> Why 2FA?
+                        </h5>
+                        <p class="mb-0">
+                            Two-factor authentication adds an extra layer of security to your account.
+                            Even if someone knows your password, they cannot access your account without the verification code.
+                        </p>
+                    </div>
+                    
+                    <h4 class="mt-4">Step 1: Install an Authenticator App</h4>
+                    <p>Download and install one of these apps on your mobile device:</p>
+                    <ul>
+                        <li>Google Authenticator (iOS/Android)</li>
+                        <li>Microsoft Authenticator (iOS/Android)</li>
+                        <li>Authy (iOS/Android)</li>
+                    </ul>
+                    
+                    <h4 class="mt-4">Step 2: Scan QR Code</h4>
+                    <p>Open your authenticator app and scan this QR code:</p>
+                    <div class="text-center my-3">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=@Model.QrCodeUri" 
+                             alt="QR Code" 
+                             class="img-fluid" />
+                    </div>
+                    <p class="text-center">
+                        <small class="text-muted">
+                            Or manually enter this key: <code>@Model.AuthenticatorKey</code>
+                        </small>
+                    </p>
+                    
+                    <h4 class="mt-4">Step 3: Verify Setup</h4>
+                    <p>Enter the 6-digit code from your authenticator app to complete setup:</p>
+                    
+                    <form method="post">
+                        <input type="hidden" name="email" value="@Model.Email" />
+                        <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Input.Code" class="form-label"></label>
+                            <input asp-for="Input.Code" 
+                                   class="form-control form-control-lg text-center" 
+                                   autocomplete="off" 
+                                   aria-required="true" 
+                                   placeholder="000000"
+                                   maxlength="6"
+                                   pattern="\d{6}"
+                                   inputmode="numeric" />
+                            <span asp-validation-for="Input.Code" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Complete Setup</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

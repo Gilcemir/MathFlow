@@ -1,0 +1,36 @@
+@page
+@model LockoutModel
+@{
+    ViewData["Title"] = "Account Locked";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h2>@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">
+                            <i class="bi bi-lock-fill"></i> Account Locked Out
+                        </h4>
+                        <p>
+                            Your account has been locked due to multiple failed login attempts.
+                            This is a security measure to protect your account.
+                        </p>
+                        <hr>
+                        <p class="mb-0">
+                            Please try again later or contact support if you need immediate assistance.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-3 text-center">
+                        <a asp-page="./Login" class="btn btn-primary">Back to Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

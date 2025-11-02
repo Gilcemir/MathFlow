@@ -1,0 +1,76 @@
+@page
+@model TwoFactorModel
+@{
+    ViewData["Title"] = "Two-Factor Authentication";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>@ViewData["Title"]</h2>
+                    <p class="text-muted">Enter the verification code from your authenticator app</p>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" name="email" value="@Model.Email" />
+                        <input type="hidden" name="rememberMe" value="@Model.RememberMe" />
+                        <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Input.Code" class="form-label"></label>
+                            <input asp-for="Input.Code" 
+                                   class="form-control form-control-lg text-center" 
+                                   autocomplete="off" 
+                                   aria-required="true" 
+                                   placeholder="000000"
+                                   maxlength="6"
+                                   pattern="\d{6}"
+                                   inputmode="numeric" />
+                            <span asp-validation-for="Input.Code" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                Enter the 6-digit code from your authenticator app (e.g., Google Authenticator, Microsoft Authenticator).
+                            </small>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Verify</button>
+                        </div>
+                        
+                        <div class="mt-3 text-center">
+                            <p>
+                                <a asp-page="./Login">Back to login</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-3" role="alert">
+                <h5 class="alert-heading">
+                    <i class="bi bi-info-circle"></i> Need help?
+                </h5>
+                <p class="mb-0">
+                    Open your authenticator app and enter the 6-digit code shown for MathFlow.
+                    The code refreshes every 30 seconds.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        document.querySelector('input[name="Input.Code"]').addEventListener('input', function(e) {
+            if (e.target.value.length === 6 && /^\d{6}$/.test(e.target.value)) {
+                // Opcional: auto-submit após breve delay
+                // setTimeout(() => e.target.form.submit(), 500);
+            }
+        });
+    </script>
+}
