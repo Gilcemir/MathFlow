@@ -4,11 +4,19 @@
 
 ## 🚀 Features
 
-- **Document Conversion**: Convert mathematical documents between formats using Node.js integration
-- **Full Observability Stack**: Integrated telemetry with logs, traces, and metrics
-- **Containerized Architecture**: Docker-based deployment with PostgreSQL database
-- **Health Checks**: Application and database health monitoring
-- **Modern Tech Stack**: Built with .NET 9.0, OpenTelemetry, and industry best practices
+- **🔐 Identity Provider**: Complete authentication and authorization system
+  - Email/password authentication with optional Two-Factor Authentication (TOTP)
+  - Google OAuth integration
+  - Role-based access control (masterAdmin, admin, premium, normal)
+  - Multi-role support (users can have multiple roles simultaneously)
+  - Password policy enforcement (8+ chars, uppercase, special character)
+  - Account lockout protection after failed login attempts
+  - Master admin seeding with configurable credentials
+- **📄 Document Conversion**: Convert mathematical documents between formats using Node.js integration
+- **📊 Full Observability Stack**: Integrated telemetry with logs, traces, and metrics
+- **🐳 Containerized Architecture**: Docker-based deployment with PostgreSQL database
+- **💚 Health Checks**: Application and database health monitoring
+- **🚀 Modern Tech Stack**: Built with .NET 9.0, OpenTelemetry, and industry best practices
 
 ## 📁 Project Structure
 
@@ -16,21 +24,38 @@
 MathFlow/
 ├── src/
 │   └── MathFlow/                    # Main application
+│       ├── Domain/                  # Domain layer (future)
+│       ├── Application/             # Application services
+│       │   └── Services/
+│       │       └── Identity/       # Identity services (UserService, RoleService)
 │       ├── Infrastructure/          # Infrastructure layer
 │       │   ├── Converters/         # Document conversion logic
 │       │   │   └── Scripts/        # Node.js conversion scripts
+│       │   ├── IdentityServer/     # Identity configuration and data
+│       │   │   ├── Data/           # ApplicationDbContext and migrations
+│       │   │   ├── Models/         # ApplicationUser
+│       │   │   ├── Configuration/  # Identity setup and policies
+│       │   │   └── Seeders/        # Database seeding
 │       │   └── Observability/      # OpenTelemetry configuration
 │       ├── Pages/                  # Razor Pages
+│       │   ├── Account/            # Authentication pages (Login, Register)
+│       │   ├── Identity/Manage/    # Profile management
+│       │   ├── Admin/Users/        # User administration
+│       │   └── Converters/         # Document conversion UI
 │       └── Properties/             # Application properties
 ├── tests/
 │   ├── MathFlow.UnitTests/         # Unit tests
+│   │   └── Identity/               # Identity unit tests
 │   └── MathFlow.IntegrationTests/  # Integration tests
+│       └── Identity/               # Identity integration tests (37 tests)
 ├── docker/
 │   ├── app/                        # Application Dockerfile
 │   ├── infra/                      # Infrastructure configs (OTEL, Loki, Prometheus, Grafana)
 │   ├── local/                      # Local development compose files
 │   └── production/                 # Production templates
 ├── tasks/                          # Project tasks and documentation
+│   ├── prd-identity-provider/      # Identity Provider PRD and tasks
+│   └── prd-infra-observability/    # Observability PRD and tasks
 ├── Makefile                        # Build and deployment commands
 └── README.md                       # This file
 ```
@@ -132,11 +157,35 @@ Once the stack is running, you can access the following services:
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
-| **Application** | http://localhost:5124 | N/A |
+| **Application** | http://localhost:5124 | See Identity section below |
 | **Grafana** | http://localhost:3000 | admin / admin |
 | **Prometheus** | http://localhost:9090 | N/A |
 | **Loki** | http://localhost:3100/ready | N/A |
 | **PostgreSQL** | localhost:5432 | postgres / postgres |
+
+### Identity & Authentication
+
+The application includes a complete identity system with the following default credentials:
+
+**Master Admin (Development)**
+- Email: `admin@mathflow.local`
+- Password: Configured in `appsettings.Development.json`
+- Roles: `masterAdmin`
+- 2FA: Disabled (master admin bypass)
+
+**User Registration**
+- Navigate to http://localhost:5124/Account/Register
+- Password requirements: 8+ characters, 1 uppercase, 1 special character
+- Two-Factor Authentication: Optional (can be enabled from profile settings)
+- Default role: `normal`
+
+**Available Roles**
+- `masterAdmin`: Full system access, cannot be removed
+- `admin`: Administrative access to user management
+- `premium`: Premium features access
+- `normal`: Standard user access
+
+**Multi-Role Support**: Users can have multiple roles simultaneously (e.g., a user can be both `admin` and `premium`)
 
 ### Health Checks
 
@@ -150,6 +199,10 @@ Once the stack is running, you can access the following services:
 
 - **Framework**: ASP.NET Core 9.0
 - **Database**: PostgreSQL 17
+- **Identity**: ASP.NET Core Identity with Entity Framework Core
+- **Authentication**: Cookie-based + Google OAuth 2.0
+- **Authorization**: Policy-based with role claims
+- **2FA**: TOTP (Time-based One-Time Password)
 - **Telemetry**: OpenTelemetry (OTLP)
 - **Metrics**: Prometheus
 - **Logs**: Loki
@@ -192,6 +245,8 @@ The application uses a **multi-stage Docker build**:
 
 ## 🧪 Testing
 
+MathFlow includes comprehensive test coverage with **37 integration tests** for the Identity Provider.
+
 ### Running Tests
 
 ```bash
@@ -201,7 +256,28 @@ make test
 # Run specific test project
 dotnet test tests/MathFlow.UnitTests
 dotnet test tests/MathFlow.IntegrationTests
+
+# Run only Identity tests
+dotnet test --filter "FullyQualifiedName~MathFlow.IntegrationTests.Identity"
 ```
+
+### Test Coverage
+
+**Identity Provider Tests (37 tests)**
+- Setup tests (3): Database connectivity, role seeding, master admin seeding
+- Registration flow tests (3): Valid registration, weak password validation, duplicate email
+- Login flow tests (4): Password validation, email confirmation, master admin
+- Two-factor authentication tests (3): Key generation, 2FA enablement
+- Role management tests (6): Multi-role assignment/removal, masterAdmin protection
+- Authorization bypass tests (3): Unauthenticated access, public pages
+- Lockout tests (2): Lockout configuration, failed attempt tracking
+- Password policy tests (6): Minimum length, uppercase, special characters
+- Master admin protection tests (4): 2FA disabled, role protection, additional roles
+
+**Test Infrastructure**
+- TestContainers with PostgreSQL 17-alpine for real database testing
+- WebApplicationFactory for in-memory ASP.NET Core testing
+- FluentAssertions for readable test assertions
 
 ### End-to-End Testing
 
@@ -260,6 +336,36 @@ Configuration files are located in `src/MathFlow/`:
 
 - `appsettings.json` - Production settings
 - `appsettings.Development.json` - Development overrides
+
+### Identity Configuration
+
+The Identity system requires configuration in `appsettings.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Port=5432;Database=mathflow_db;..."
+  },
+  "Identity": {
+    "MasterAdmin": {
+      "Email": "admin@mathflow.com",
+      "Password": ""  // Set via environment variable in production
+    }
+  },
+  "Authentication": {
+    "Google": {
+      "ClientId": "",     // Get from Google Cloud Console
+      "ClientSecret": ""  // Get from Google Cloud Console
+    }
+  }
+}
+```
+
+**Security Best Practices:**
+- Never commit passwords to version control
+- Use environment variables for sensitive data in production
+- Rotate master admin password regularly
+- Enable 2FA for admin accounts (except masterAdmin)
 
 ## 🐛 Troubleshooting
 
@@ -354,6 +460,13 @@ chore: update dependencies
 
 ## 📚 Additional Documentation
 
+### Identity Provider
+- **PRD**: See `tasks/prd-identity-provider/_prd.md` for product requirements
+- **Tech Spec**: See `tasks/prd-identity-provider/techspec.md` for technical specifications
+- **Task Documentation**: See `tasks/prd-identity-provider/` for implementation details
+- **Google OAuth Setup**: See `docs/google-oauth-setup.md` for OAuth configuration
+
+### Observability
 - **Docker Usage**: See `docker/README.md` for detailed Docker information
 - **Task Documentation**: See `tasks/prd-infra-observability/` for implementation details
 - **Tech Spec**: See `tasks/prd-infra-observability/techspec.md` for technical specifications
