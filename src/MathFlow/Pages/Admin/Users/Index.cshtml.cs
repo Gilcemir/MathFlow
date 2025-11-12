@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MathFlow.Infrastructure.IdentityServer.Models;
 using MathFlow.Infrastructure.IdentityServer.Configuration;
+using MathFlow.Application.Services.Identity;
 
 namespace MathFlow.Pages.Admin.Users;
 
@@ -11,10 +13,14 @@ namespace MathFlow.Pages.Admin.Users;
 public class IndexModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserService _userService;
 
-    public IndexModel(UserManager<ApplicationUser> userManager)
+    public IndexModel(
+        UserManager<ApplicationUser> userManager,
+        UserService userService)
     {
         _userManager = userManager;
+        _userService = userService;
     }
 
     public List<UserViewModel> Users { get; set; } = new();
@@ -46,5 +52,38 @@ public class IndexModel : PageModel
                 Roles = roles.ToList()
             });
         }
+    }
+
+    public async Task<IActionResult> OnPostDeleteAsync(string userId)
+    {
+        if (string.IsNullOrEmpty(userId))
+        {
+            TempData["ErrorMessage"] = "Invalid user ID.";
+            return RedirectToPage();
+        }
+
+        try
+        {
+            var result = await _userService.DeleteUserAsync(userId);
+
+            if (result.Succeeded)
+            {
+                TempData["StatusMessage"] = "User deleted successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = $"Failed to delete user: {string.Join(", ", result.Errors.Select(e => e.Description))}";
+            }
+        }
+        catch (InvalidOperationException ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"An unexpected error occurred while deleting the user. Message: {ex.Message}";
+        }
+
+        return RedirectToPage();
     }
 }

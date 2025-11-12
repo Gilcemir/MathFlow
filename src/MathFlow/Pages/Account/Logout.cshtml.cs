@@ -20,7 +20,7 @@ public class LogoutModel : PageModel
     {
         await _signInManager.SignOutAsync();
         _logger.LogInformation("User logged out");
-        return RedirectToPage("/Public/Index");
+        return RedirectToPage("/Index");
     }
 
     public async Task<IActionResult> OnPost(string? returnUrl = null)
@@ -33,6 +33,6 @@ public class LogoutModel : PageModel
             return LocalRedirect(returnUrl);
         }
 
-        return RedirectToPage("/Public/Index");
+        return RedirectToPage("/Index");
     }
 }

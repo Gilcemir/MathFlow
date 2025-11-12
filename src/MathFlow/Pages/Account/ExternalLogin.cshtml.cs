@@ -77,7 +77,7 @@ public class ExternalLoginModel : PageModel
             UserName = userEmail,
             Email = userEmail,
             EmailConfirmed = true,
-            TwoFactorEnabled = true
+            TwoFactorEnabled = false
         };
 
         var createResult = await _userManager.CreateAsync(user);
@@ -89,8 +89,10 @@ public class ExternalLoginModel : PageModel
                 await _userManager.AddToRoleAsync(user, "normal");
 
                 _logger.LogInformation("User created account using {Provider} provider", info.LoginProvider);
+                
+                await _signInManager.SignInAsync(user, isPersistent: false);
 
-                return RedirectToPage("./TwoFactorSetup", new { email = userEmail, returnUrl });
+                return LocalRedirect(returnUrl);
             }
         }
 

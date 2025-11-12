@@ -14,6 +14,14 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
+    
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
     <div class="card">
         <div class="card-body">
@@ -69,7 +77,11 @@
                                     }
                                 </td>
                                 <td>
-                                    <a asp-page="./Edit" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Edit Roles</a>
+                                    <a asp-page="./Edit" asp-route-id="@user.Id" class="btn btn-sm btn-primary me-1">Edit Roles</a>
+                                    <form method="post" asp-page-handler="Delete" class="d-inline" onsubmit="return confirm('Are you sure you want to delete user @user.Email? This action cannot be undone and will remove all associated data (roles, logins, tokens).');">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                         }

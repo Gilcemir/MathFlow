@@ -169,6 +169,41 @@ public class UserService
         return key!;
     }
 
+    /// <summary>
+    /// Deletes a user and all related data (roles, claims, logins, tokens).
+    /// </summary>
+    /// <param name="userId">User ID to delete.</param>
+    /// <returns>The result of the delete operation.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when user is not found.</exception>
+    public async Task<IdentityResult> DeleteUserAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            _logger.LogError("Attempted to delete non-existent user {UserId}", userId);
+            throw new InvalidOperationException("User not found");
+        }
+
+        var result = await _userManager.DeleteAsync(user);
+
+        if (result.Succeeded)
+        {
+            _logger.LogInformation(
+                "User {UserId} ({Email}) deleted successfully",
+                userId,
+                user.Email);
+        }
+        else
+        {
+            _logger.LogWarning(
+                "Failed to delete user {UserId}: {Errors}",
+                userId,
+                string.Join(", ", result.Errors.Select(e => e.Description)));
+        }
+
+        return result;
+    }
+
     private static void ValidateEmail(string email)
     {
         if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
