@@ -41,7 +41,7 @@ public class TwoFactorSetupModel : PageModel
     {
         if (string.IsNullOrEmpty(email))
         {
-            return Task.FromResult<IActionResult>(RedirectToPage("./Login"));
+            return Task.FromResult<IActionResult>(RedirectToPage("/Account/Login"));
         }
 
         Email = email;
@@ -57,7 +57,7 @@ public class TwoFactorSetupModel : PageModel
     {
         if (string.IsNullOrEmpty(email))
         {
-            return RedirectToPage("./Login");
+            return RedirectToPage("/Account/Login");
         }
 
         returnUrl ??= Url.Content("~/");

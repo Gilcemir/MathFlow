@@ -6,15 +6,15 @@ using MathFlow.Infrastructure.IdentityServer.Models;
 using MathFlow.Infrastructure.IdentityServer.Configuration;
 using System.ComponentModel.DataAnnotations;
 
-namespace MathFlow.Pages.Identity.Manage;
+namespace MathFlow.Pages.Settings;
 
 [Authorize(Policy = AuthorizationPolicies.AuthenticatedUser)]
-public class ChangePasswordModel : PageModel
+public class PasswordModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public ChangePasswordModel(
+    public PasswordModel(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager)
     {
@@ -66,7 +66,7 @@ public class ChangePasswordModel : PageModel
         {
             await _signInManager.RefreshSignInAsync(user);
             TempData["StatusMessage"] = "Password changed successfully.";
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Profile/Index");
         }
 
         foreach (var error in result.Errors)

@@ -1,7 +1,8 @@
 ---
-status: pending
+status: completed
 parallelizable: true
 blocked_by: ["1.0"]
+completed_date: 2025-01-12
 ---
 
 <task_context>
@@ -39,9 +40,9 @@ Refatorar 3 páginas de perfil e configurações para usar URLs user-centric: `/
 - **Lane:** Lane 2
 
 ## Critérios de Sucesso
-- [ ] 3 páginas com `@page` customizada
-- [ ] 1 `RedirectToPage()` atualizado
-- [ ] Código compila
+- [x] 3 páginas com `@page` customizada
+- [x] 1 `RedirectToPage()` atualizado
+- [x] Código compila
 - [ ] Commit descritivo
 
 ## Estimativa

@@ -38,10 +38,12 @@ MathFlow/
 │       │   │   └── Seeders/        # Database seeding
 │       │   └── Observability/      # OpenTelemetry configuration
 │       ├── Pages/                  # Razor Pages
-│       │   ├── Account/            # Authentication pages (Login, Register)
-│       │   ├── Identity/Manage/    # Profile management
-│       │   ├── Admin/Users/        # User administration
-│       │   └── Converters/         # Document conversion UI
+│       │   ├── Account/            # Authentication pages (/account/*)
+│       │   ├── Admin/Users/        # User administration (/admin/users/*)
+│       │   ├── Profile/            # Profile management (/profile)
+│       │   ├── Settings/           # User settings (/settings/*)
+│       │   ├── Converter.cshtml    # Document conversion UI (/converter)
+│       │   └── Privacy.cshtml      # Privacy policy (/privacy)
 │       └── Properties/             # Application properties
 ├── tests/
 │   ├── MathFlow.UnitTests/         # Unit tests
@@ -174,7 +176,7 @@ The application includes a complete identity system with the following default c
 - 2FA: Disabled (master admin bypass)
 
 **User Registration**
-- Navigate to http://localhost:5124/Account/Register
+- Navigate to http://localhost:5124/account/register
 - Password requirements: 8+ characters, 1 uppercase, 1 special character
 - Two-Factor Authentication: Optional (can be enabled from profile settings)
 - Default role: `normal`
@@ -186,6 +188,33 @@ The application includes a complete identity system with the following default c
 - `normal`: Standard user access
 
 **Multi-Role Support**: Users can have multiple roles simultaneously (e.g., a user can be both `admin` and `premium`)
+
+### Application Routes
+
+MathFlow uses clean, kebab-case URLs following modern web conventions:
+
+**Authentication** (`/account/*`)
+- `/account/login` - User login
+- `/account/register` - User registration
+- `/account/logout` - User logout
+- `/account/two-factor` - Two-factor authentication
+- `/account/external-login` - OAuth login (Google)
+- `/account/access-denied` - Access denied page
+
+**Profile & Settings**
+- `/profile` - User profile view
+- `/settings/password` - Change password
+- `/settings/security` - Two-factor authentication management
+
+**Administration** (`/admin/*`)
+- `/admin/users` - User management (admin only)
+- `/admin/users/edit` - Edit user roles (admin only)
+
+**Public Pages**
+- `/` - Home page
+- `/converter` - Document converter
+- `/privacy` - Privacy policy
+- `/error` - Error page
 
 ### Health Checks
 
@@ -465,6 +494,11 @@ chore: update dependencies
 - **Tech Spec**: See `tasks/prd-identity-provider/techspec.md` for technical specifications
 - **Task Documentation**: See `tasks/prd-identity-provider/` for implementation details
 - **Google OAuth Setup**: See `docs/google-oauth-setup.md` for OAuth configuration
+
+### URL Refactoring
+- **Project Summary**: See `tasks/prd-url-refactoring/PROJECT_COMPLETION_SUMMARY.md` for complete refactoring details
+- **Folder Structure**: See `tasks/prd-url-refactoring/FOLDER_REFACTORING_SUMMARY.md` for folder organization changes
+- **Task Documentation**: See `tasks/prd-url-refactoring/` for all refactoring tasks and decisions
 
 ### Observability
 - **Docker Usage**: See `docker/README.md` for detailed Docker information

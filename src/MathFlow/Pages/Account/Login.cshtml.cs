@@ -75,7 +75,7 @@ public class LoginModel : PageModel
 
             if (result.RequiresTwoFactor)
             {
-                return RedirectToPage("./TwoFactor", new { email = Input.Email, ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                return RedirectToPage("/Account/TwoFactor", new { email = Input.Email, ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
             }
 
             if (result.IsLockedOut)

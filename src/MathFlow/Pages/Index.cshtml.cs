@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace MathFlow.Pages;
@@ -11,8 +12,15 @@ public class IndexModel : PageModel
         _logger = logger;
     }
 
-    public void OnGet()
+    public IActionResult OnGet()
     {
+        // Redirect /Index to / for SEO and consistency
+        if (HttpContext.Request.Path.Value?.Equals("/Index", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return RedirectPermanent("/");
+        }
+
         _logger.LogInformation("Index page accessed");
+        return Page();
     }
 }

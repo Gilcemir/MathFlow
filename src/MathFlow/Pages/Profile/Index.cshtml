@@ -1,5 +1,5 @@
-@page
-@model MathFlow.Pages.Identity.Manage.IndexModel
+@page "/profile"
+@model MathFlow.Pages.Profile.IndexModel
 @{
     ViewData["Title"] = "Profile";
 }
@@ -69,8 +69,8 @@
                     <hr />
 
                     <div class="d-grid gap-2">
-                        <a asp-page="./ChangePassword" class="btn btn-primary">Change Password</a>
-                        <a asp-page="./TwoFactorAuthentication" class="btn btn-secondary">Manage Two-Factor Authentication</a>
+                        <a asp-page="/Settings/Password" class="btn btn-primary">Change Password</a>
+                        <a asp-page="/Settings/Security" class="btn btn-secondary">Manage Two-Factor Authentication</a>
                     </div>
                 </div>
             </div>

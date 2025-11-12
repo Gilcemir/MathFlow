@@ -39,7 +39,7 @@ public class TwoFactorModel : PageModel
     {
         if (string.IsNullOrEmpty(email))
         {
-            return RedirectToPage("./Login");
+            return RedirectToPage("/Account/Login");
         }
 
         Email = email;
@@ -53,7 +53,7 @@ public class TwoFactorModel : PageModel
     {
         if (string.IsNullOrEmpty(email))
         {
-            return RedirectToPage("./Login");
+            return RedirectToPage("/Account/Login");
         }
 
         returnUrl ??= Url.Content("~/");

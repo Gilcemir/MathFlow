@@ -7,15 +7,15 @@ using MathFlow.Infrastructure.IdentityServer.Configuration;
 using MathFlow.Application.Services.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace MathFlow.Pages.Identity.Manage;
+namespace MathFlow.Pages.Settings;
 
 [Authorize(Policy = AuthorizationPolicies.AuthenticatedUser)]
-public class TwoFactorAuthenticationModel : PageModel
+public class SecurityModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly UserService _userService;
 
-    public TwoFactorAuthenticationModel(
+    public SecurityModel(
         UserManager<ApplicationUser> userManager,
         UserService userService)
     {

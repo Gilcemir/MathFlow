@@ -1,7 +1,8 @@
 ---
-status: pending
+status: completed
 parallelizable: true
 blocked_by: ["1.0"]
+completed_date: 2025-01-12
 ---
 
 <task_context>
@@ -39,8 +40,8 @@ Refatorar 3 páginas públicas para `/privacy`, `/error`, `/converter`.
 - **Lane:** Lane 3
 
 ## Critérios de Sucesso
-- [ ] 3 páginas com `@page` customizada
-- [ ] Código compila
+- [x] 3 páginas com `@page` customizada
+- [x] Código compila
 - [ ] Commit descritivo
 
 ## Estimativa

@@ -70,9 +70,9 @@ public static class IdentityConfiguration
 
         services.ConfigureApplicationCookie(options =>
         {
-            options.LoginPath = "/Account/Login";
-            options.LogoutPath = "/Account/Logout";
-            options.AccessDeniedPath = "/Account/AccessDenied";
+            options.LoginPath = "/account/login";
+            options.LogoutPath = "/account/logout";
+            options.AccessDeniedPath = "/account/access-denied";
             options.ExpireTimeSpan = TimeSpan.FromDays(7);
             options.SlidingExpiration = true;
             options.Cookie.HttpOnly = true;

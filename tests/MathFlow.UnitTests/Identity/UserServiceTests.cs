@@ -29,7 +29,9 @@ public class UserServiceTests : IdentityTestBase
         await userManager.Received(1).CreateAsync(
             Arg.Is<ApplicationUser>(u => 
                 u.Email == "test@example.com" && 
-                u.TwoFactorEnabled == true), 
+                u.UserName == "testuser" &&
+                u.EmailConfirmed == true &&
+                u.TwoFactorEnabled == false), 
             "Password@123");
         await userManager.Received(1).AddToRoleAsync(Arg.Any<ApplicationUser>(), MathFlow.Application.Services.Identity.Roles.Normal);
     }
@@ -69,17 +71,19 @@ public class UserServiceTests : IdentityTestBase
         userManager.FindByEmailAsync("test@example.com")
             .Returns(user);
         
-        userManager.GetTwoFactorEnabledAsync(user)
-            .Returns(true);
-        
-        userManager.CheckPasswordAsync(user, "Password@123")
-            .Returns(true);
+        signInManager.PasswordSignInAsync(
+            user,
+            "Password@123",
+            false,
+            true)
+            .Returns(SignInResult.TwoFactorRequired);
 
         var service = new UserService(userManager, signInManager, logger);
 
         var result = await service.LoginAsync("test@example.com", "Password@123", false);
 
         result.RequiresTwoFactor.Should().BeTrue();
+        await signInManager.Received(1).PasswordSignInAsync(user, "Password@123", false, true);
     }
 
     [Fact]

@@ -1,7 +1,8 @@
 ---
-status: pending
+status: completed
 parallelizable: true
 blocked_by: ["3.0"]
+completed_date: 2025-01-12
 ---
 
 <task_context>
@@ -38,9 +39,9 @@ blocked_by: ["3.0"]
 - **Lane:** Lane 2
 
 ## Critérios de Sucesso
-- [ ] Todos cenários passam
-- [ ] Redirects funcionam
-- [ ] Mensagens de feedback exibidas
+- [x] Todos cenários passam
+- [x] Redirects funcionam
+- [x] Mensagens de feedback exibidas
 
 ## Estimativa
 **Total:** 15 minutos

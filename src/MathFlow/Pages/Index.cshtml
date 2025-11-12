@@ -23,7 +23,7 @@
             <div class="card-body">
                 <h5 class="card-title">📄 Document Processing</h5>
                 <p class="card-text">Convert and process mathematical documents with ease using our powerful conversion tools.</p>
-                <a asp-page="/Converters/Converter" class="btn btn-primary">Try Converter</a>
+                <a asp-page="/converter" class="btn btn-primary">Try Converter</a>
             </div>
         </div>
     </div>
@@ -43,8 +43,8 @@
         <div class="col-md-12 text-center">
             <h3>Get Started</h3>
             <p>Create an account or sign in to access all features</p>
-            <a asp-page="/Account/Register" class="btn btn-primary btn-lg me-2">Register</a>
-            <a asp-page="/Account/Login" class="btn btn-outline-primary btn-lg">Login</a>
+            <a asp-page="/account/register" class="btn btn-primary btn-lg me-2">Register</a>
+            <a asp-page="/account/login" class="btn btn-outline-primary btn-lg">Login</a>
         </div>
     </div>
 }
@@ -54,10 +54,10 @@ else
         <div class="col-md-12 text-center">
             <h3>Welcome back, @User.Identity?.Name!</h3>
             <p>You are logged in as: <strong>@string.Join(", ", User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(c => c.Value))</strong></p>
-            <a asp-page="/Identity/Manage/Index" class="btn btn-primary me-2">Manage Profile</a>
+            <a href="/profile" class="btn btn-primary me-2">Manage Profile</a>
             @if (User.IsInRole("admin") || User.IsInRole("masterAdmin"))
             {
-                <a asp-page="/Admin/Users/Index" class="btn btn-outline-primary">Admin Panel</a>
+                <a href="/admin/users" class="btn btn-outline-primary">Admin Panel</a>
             }
         </div>
     </div>

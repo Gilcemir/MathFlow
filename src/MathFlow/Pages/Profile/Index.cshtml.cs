@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MathFlow.Infrastructure.IdentityServer.Models;
 using MathFlow.Infrastructure.IdentityServer.Configuration;
 
-namespace MathFlow.Pages.Identity.Manage;
+namespace MathFlow.Pages.Profile;
 
 [Authorize(Policy = AuthorizationPolicies.AuthenticatedUser)]
 public class IndexModel : PageModel

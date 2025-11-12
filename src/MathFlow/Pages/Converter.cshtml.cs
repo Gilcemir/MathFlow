@@ -4,7 +4,7 @@ using MathFlow.Shared.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MathFlow.Pages.Converters;
+namespace MathFlow.Pages;
 
 public class Converter : PageModel
 {

@@ -35,10 +35,11 @@ public class RegisterModel : PageModel
         [Display(Name = "Email")]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Username is required")]
-        [StringLength(50, ErrorMessage = "Username must be between {2} and {1} characters", MinimumLength = 3)]
-        [Display(Name = "Username")]
-        public string UserName { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Display name is required")]
+        [StringLength(100, ErrorMessage = "Display name must be between {2} and {1} characters", MinimumLength = 2)]
+        [Display(Name = "Full Name")]
+        [RegularExpression(@"^[a-zA-ZÀ-ÿ\s'-]+$", ErrorMessage = "Display name can only contain letters, spaces, hyphens, and apostrophes")]
+        public string DisplayName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Password is required")]
         [StringLength(100, ErrorMessage = "Password must be at least {2} characters long", MinimumLength = 8)]
@@ -65,14 +66,14 @@ public class RegisterModel : PageModel
 
         if (ModelState.IsValid)
         {
-            var result = await _userService.RegisterUserAsync(Input.Email, Input.Password, Input.UserName);
+            var result = await _userService.RegisterUserAsync(Input.Email, Input.Password, Input.DisplayName);
 
             if (result.Succeeded)
             {
                 _logger.LogInformation("User {Email} registered successfully", Input.Email);
 
                 TempData["SuccessMessage"] = "Registration successful! You can now log in. You may enable Two-Factor Authentication from your profile settings.";
-                return RedirectToPage("./Login", new { returnUrl });
+                return RedirectToPage("/Account/Login", new { returnUrl });
             }
 
             foreach (var error in result.Errors)

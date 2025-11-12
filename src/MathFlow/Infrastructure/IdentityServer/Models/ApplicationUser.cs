@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace MathFlow.Infrastructure.IdentityServer.Models;
 
@@ -8,6 +9,14 @@ namespace MathFlow.Infrastructure.IdentityServer.Models;
 /// </summary>
 public class ApplicationUser : IdentityUser
 {
+    /// <summary>
+    /// Display name of the user (full name).
+    /// </summary>
+    [Required]
+    [StringLength(100, MinimumLength = 2)]
+    [RegularExpression(@"^[a-zA-ZÀ-ÿ\s'-]+$", ErrorMessage = "Display name can only contain letters, spaces, hyphens, and apostrophes")]
+    public string DisplayName { get; set; } = string.Empty;
+
     // FUTURE EXTENSIONS:
     // - CreatedAt: timestamp de criação do usuário
     // - LastLoginAt: timestamp do último login

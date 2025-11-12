@@ -1,7 +1,8 @@
 ---
-status: pending
+status: completed
 parallelizable: true
 blocked_by: ["1.0"]
+completed_date: 2025-01-12
 ---
 
 <task_context>
@@ -35,9 +36,9 @@ Refatorar 2 páginas administrativas para `/admin/users` e `/admin/users/edit`.
 - **Lane:** Lane 3
 
 ## Critérios de Sucesso
-- [ ] 2 páginas com `@page` customizada
-- [ ] 1 `RedirectToPage()` atualizado
-- [ ] Código compila
+- [x] 2 páginas com `@page` customizada
+- [x] 1 `RedirectToPage()` atualizado
+- [x] Código compila
 - [ ] Commit descritivo
 
 ## Estimativa

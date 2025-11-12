@@ -32,14 +32,14 @@ public class ExternalLoginModel : PageModel
         if (remoteError != null)
         {
             ErrorMessage = $"Error from external provider: {remoteError}";
-            return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+            return RedirectToPage("/Account/Login", new { ReturnUrl = returnUrl });
         }
 
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info == null)
         {
             ErrorMessage = "Error loading external login information.";
-            return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+            return RedirectToPage("/Account/Login", new { ReturnUrl = returnUrl });
         }
 
         var result = await _signInManager.ExternalLoginSignInAsync(
@@ -57,19 +57,19 @@ public class ExternalLoginModel : PageModel
         if (result.RequiresTwoFactor)
         {
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-            return RedirectToPage("./TwoFactor", new { email, returnUrl });
+            return RedirectToPage("/Account/TwoFactor", new { email, returnUrl });
         }
 
         if (result.IsLockedOut)
         {
-            return RedirectToPage("./Lockout");
+            return RedirectToPage("/Account/Lockout");
         }
 
         var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
         if (string.IsNullOrEmpty(userEmail))
         {
             ErrorMessage = "Email not provided by external provider.";
-            return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+            return RedirectToPage("/Account/Login", new { ReturnUrl = returnUrl });
         }
 
         var user = new ApplicationUser
@@ -102,6 +102,6 @@ public class ExternalLoginModel : PageModel
         }
 
         ErrorMessage = "Failed to create account.";
-        return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+        return RedirectToPage("/Account/Login", new { ReturnUrl = returnUrl });
     }
 }

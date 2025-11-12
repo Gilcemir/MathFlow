@@ -1,7 +1,8 @@
 ---
-status: pending
+status: completed
 parallelizable: false
 blocked_by: ["2.0","3.0","4.0","5.0"]
+completed_date: 2025-01-12
 ---
 
 <task_context>
@@ -72,10 +73,10 @@ dotnet build
 - **Lane:** Lane 4 (final)
 
 ## Critérios de Sucesso
-- [ ] Todos links em `_Layout.cshtml` atualizados (~9 links)
-- [ ] Todos links em `Index.cshtml` atualizados (~7 links)
-- [ ] Busca global não retorna links antigos
-- [ ] Código compila
+- [x] Todos links em `_Layout.cshtml` atualizados (~10 links)
+- [x] Todos links em `Index.cshtml` atualizados (~4 links)
+- [x] Busca global não retorna links antigos
+- [x] Código compila
 - [ ] Commit descritivo
 
 ## Estimativa

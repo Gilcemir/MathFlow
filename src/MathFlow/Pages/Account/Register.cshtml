@@ -1,4 +1,4 @@
-@page
+@page "/account/register"
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
@@ -23,9 +23,9 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label asp-for="Input.UserName" class="form-label"></label>
-                            <input asp-for="Input.UserName" class="form-control" aria-required="true" placeholder="Choose a username" />
-                            <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                            <label asp-for="Input.DisplayName" class="form-label"></label>
+                            <input asp-for="Input.DisplayName" class="form-control" aria-required="true" placeholder="Enter your full name" />
+                            <span asp-validation-for="Input.DisplayName" class="text-danger"></span>
                         </div>
                         
                         <div class="mb-3">

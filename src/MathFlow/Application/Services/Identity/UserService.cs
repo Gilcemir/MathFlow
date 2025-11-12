@@ -27,20 +27,21 @@ public class UserService
     /// </summary>
     /// <param name="email">User email address.</param>
     /// <param name="password">User password.</param>
-    /// <param name="userName">User name.</param>
+    /// <param name="displayName">User display name (full name).</param>
     /// <returns>The result of the registration operation.</returns>
     public async Task<IdentityResult> RegisterUserAsync(
         string email,
         string password,
-        string userName)
+        string displayName)
     {
         ValidateEmail(email);
-        ValidateUserName(userName);
+        ValidateDisplayName(displayName);
 
         var user = new ApplicationUser
         {
-            UserName = userName,
+            UserName = email,
             Email = email,
+            DisplayName = displayName,
             TwoFactorEnabled = false,
             EmailConfirmed = true
         };
@@ -52,9 +53,10 @@ public class UserService
             await _userManager.AddToRoleAsync(user, Roles.Normal);
 
             _logger.LogInformation(
-                "User {Email} registered successfully with role '{Role}'",
+                "User {Email} registered successfully with role '{Role}' and display name '{DisplayName}'",
                 email,
-                Roles.Normal);
+                Roles.Normal,
+                displayName);
         }
         else
         {
@@ -212,11 +214,21 @@ public class UserService
         }
     }
 
-    private static void ValidateUserName(string userName)
+    private static void ValidateDisplayName(string displayName)
     {
-        if (string.IsNullOrWhiteSpace(userName))
+        if (string.IsNullOrWhiteSpace(displayName))
         {
-            throw new ArgumentException("Username cannot be empty", nameof(userName));
+            throw new ArgumentException("Display name cannot be empty", nameof(displayName));
+        }
+
+        if (displayName.Length < 2 || displayName.Length > 100)
+        {
+            throw new ArgumentException("Display name must be between 2 and 100 characters", nameof(displayName));
+        }
+
+        if (!System.Text.RegularExpressions.Regex.IsMatch(displayName, @"^[a-zA-ZÀ-ÿ\s'-]+$"))
+        {
+            throw new ArgumentException("Display name can only contain letters, spaces, hyphens, and apostrophes", nameof(displayName));
         }
     }
 }

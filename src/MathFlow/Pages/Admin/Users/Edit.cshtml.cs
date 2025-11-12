@@ -78,7 +78,7 @@ public class EditModel : PageModel
         if (result.Succeeded)
         {
             TempData["StatusMessage"] = "Role updated successfully.";
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Admin/Users/Index");
         }
 
         foreach (var error in result.Errors)
