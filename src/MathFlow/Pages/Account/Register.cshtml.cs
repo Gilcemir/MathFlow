@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MathFlow.Application.Services.Identity;
+using MathFlow.Infrastructure.IdentityServer.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace MathFlow.Pages.Account;
@@ -8,11 +10,16 @@ namespace MathFlow.Pages.Account;
 public class RegisterModel : PageModel
 {
     private readonly UserService _userService;
+    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ILogger<RegisterModel> _logger;
 
-    public RegisterModel(UserService userService, ILogger<RegisterModel> logger)
+    public RegisterModel(
+        UserService userService,
+        SignInManager<ApplicationUser> signInManager,
+        ILogger<RegisterModel> logger)
     {
         _userService = userService;
+        _signInManager = signInManager;
         _logger = logger;
     }
 
@@ -75,5 +82,15 @@ public class RegisterModel : PageModel
         }
 
         return Page();
+    }
+
+    public IActionResult OnPostExternalLogin(string provider, string? returnUrl = null)
+    {
+        returnUrl ??= Url.Content("~/");
+
+        var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
+        var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
+        return new ChallengeResult(provider, properties);
     }
 }
