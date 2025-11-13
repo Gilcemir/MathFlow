@@ -23,13 +23,14 @@ public class UserServiceTests : IdentityTestBase
 
         var service = new UserService(userManager, signInManager, logger);
 
-        var result = await service.RegisterUserAsync("test@example.com", "Password@123", "testuser");
+        var result = await service.RegisterUserAsync("test@example.com", "Password@123", "Test User");
 
         result.Succeeded.Should().BeTrue();
         await userManager.Received(1).CreateAsync(
             Arg.Is<ApplicationUser>(u => 
                 u.Email == "test@example.com" && 
-                u.UserName == "testuser" &&
+                u.UserName == "test@example.com" &&
+                u.DisplayName == "Test User" &&
                 u.EmailConfirmed == true &&
                 u.TwoFactorEnabled == false), 
             "Password@123");
@@ -49,7 +50,7 @@ public class UserServiceTests : IdentityTestBase
 
         var service = new UserService(userManager, signInManager, logger);
 
-        var result = await service.RegisterUserAsync("test@example.com", "weak", "testuser");
+        var result = await service.RegisterUserAsync("test@example.com", "weak", "Test User");
 
         result.Succeeded.Should().BeFalse();
         result.Errors.Should().ContainSingle(e => e.Description == "Password too weak");
@@ -167,14 +168,14 @@ public class UserServiceTests : IdentityTestBase
 
         var service = new UserService(userManager, signInManager, logger);
 
-        var act = async () => await service.RegisterUserAsync("invalidemail", "Password@123", "testuser");
+        var act = async () => await service.RegisterUserAsync("invalidemail", "Password@123", "Test User");
 
         await act.Should().ThrowAsync<ArgumentException>()
             .WithMessage("Invalid email format*");
     }
 
     [Fact]
-    public async Task RegisterUserAsync_ShouldThrowException_WhenUserNameIsEmpty()
+    public async Task RegisterUserAsync_ShouldThrowException_WhenDisplayNameIsEmpty()
     {
         var userManager = CreateMockUserManager();
         var signInManager = CreateMockSignInManager(userManager);
@@ -185,6 +186,6 @@ public class UserServiceTests : IdentityTestBase
         var act = async () => await service.RegisterUserAsync("test@example.com", "Password@123", "");
 
         await act.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("Username cannot be empty*");
+            .WithMessage("Display name cannot be empty*");
     }
 }

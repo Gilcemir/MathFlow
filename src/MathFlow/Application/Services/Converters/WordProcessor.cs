@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using MathFlow.Infrastructure.Converters;
 using MathFlow.Shared.Abstractions;
 
-namespace MathFlow.Services.Coverters;
+namespace MathFlow.Application.Services.Converters;
 
 public class WordProcessor
 {

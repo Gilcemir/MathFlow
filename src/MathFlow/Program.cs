@@ -1,48 +1,16 @@
-using Jering.Javascript.NodeJS;
-using MathFlow.Infrastructure.Converters;
-using MathFlow.Infrastructure.Observability;
-using MathFlow.Services;
-using MathFlow.Services.Coverters;
-using MathFlow.Infrastructure.IdentityServer.Configuration;
+using MathFlow.Application;
+using MathFlow.Infrastructure;
 using MathFlow.Infrastructure.IdentityServer.Seeders;
-using MathFlow.Application.Services.Identity;
-using Microsoft.AspNetCore.Identity;
+using MathFlow.Infrastructure.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddNodeJS();
 
-// Configure OpenTelemetry
 builder.AddOpenTelemetry();
 
-// Configure Identity
-builder.Services.AddIdentityServices(builder.Configuration, builder.Environment);
-builder.Services.AddAuthorizationPolicies();
-
-// Register Email Sender (required for Identity)
-builder.Services
-    .AddScoped<IEmailSender<MathFlow.Infrastructure.IdentityServer.Models.ApplicationUser>,
-        MathFlow.Infrastructure.IdentityServer.Services.EmailSender>();
-
-// Register application services
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<RoleService>();
-
-builder.Services.Configure<OutOfProcessNodeJSServiceOptions>(options =>
-{
-    options.Concurrency = Concurrency.MultiProcess;
-    options.ConcurrencyDegree = 4;
-    options.EnableFileWatching = false;
-});
-builder.Services.Configure<NodeJSProcessOptions>(options =>
-{
-    options.ProjectPath = Path.Combine(Directory.GetCurrentDirectory(), "Infrastructure/Converters/Scripts");
-});
-
-builder.Services.AddSingleton<WordProcessor>();
-builder.Services.AddSingleton<OmmlToMathMLConverter>();
+builder.Services.AddInfrastructureServices(builder.Configuration, builder.Environment);
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
