@@ -67,6 +67,7 @@ MathFlow/
 Before running MathFlow, ensure you have the following installed:
 
 - **.NET 9.0 SDK** - [Download](https://dotnet.microsoft.com/download/dotnet/9.0)
+- **dotnet-ef** (for database migrations) - Install with: `dotnet tool install --global dotnet-ef`
 - **Docker** and **Docker Compose** - [Download](https://www.docker.com/products/docker-desktop)
 - **Make** (optional, for convenience commands) - Usually pre-installed on macOS/Linux
 - **Node.js v22.16.0** (for local development) - [Download](https://nodejs.org/)
@@ -109,12 +110,18 @@ docker compose -f docker/local/docker-compose.yml up --build -d
 ### Local Development (Without Docker)
 
 ```bash
-# Build the application
+# 1. Start PostgreSQL (using Docker infrastructure)
+make docker-infra-up
+
+# 2. Apply database migrations (REQUIRED on first run)
+make migrate
+
+# 3. Build the application
 make build
 # or
 cd src/MathFlow && dotnet build
 
-# Run the application
+# 4. Run the application
 make run
 # or
 cd src/MathFlow && dotnet run
@@ -125,6 +132,8 @@ make test
 dotnet test
 ```
 
+**⚠️ Important**: Always run `make migrate` before starting the application for the first time or after database resets.
+
 ## 📋 Available Make Commands
 
 ### Build & Run
@@ -132,6 +141,11 @@ dotnet test
 - `make run` - Run the application locally
 - `make test` - Execute tests
 - `make clean` - Clean build artifacts (bin/obj folders)
+
+### Database & Migrations
+- `make migrate` - Apply pending migrations to the database
+- `make migrate-create NAME=MigrationName` - Create a new migration
+- `make migrate-reset` - Drop and recreate database (⚠️ deletes all data!)
 
 ### Docker - Infrastructure
 - `make docker-infra-up` - Start only infrastructure (PostgreSQL)
@@ -426,6 +440,27 @@ docker logs mathflow-postgres
 make docker-infra-down
 make docker-infra-up
 ```
+
+#### Error: "relation 'Roles' does not exist"
+
+This error occurs when database migrations have not been applied:
+
+```bash
+# Apply migrations
+make migrate
+
+# Then start the application
+make run
+# or
+make docker-up
+```
+
+**Note**: Migrations are **NOT** applied automatically. You must run `make migrate` after:
+- Resetting the database
+- Pulling new migrations from git
+- Creating new migrations
+
+See [Database Troubleshooting Guide](docs/troubleshooting-database.md) for more details.
 
 #### Grafana shows no data
 

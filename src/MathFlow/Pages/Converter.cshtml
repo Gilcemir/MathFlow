@@ -176,9 +176,28 @@
                     a.click();
                     window.URL.revokeObjectURL(url);
                     document.body.removeChild(a);
+                    
+                    // Limpa o input após sucesso
+                    fileInput.value = '';
+                    convertBtn.disabled = true;
                 } else {
-                    // Se não for um arquivo, recarrega a página para mostrar mensagens de erro
-                    window.location.reload();
+                    // Se não for um arquivo, é uma página HTML com erro
+                    const html = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    // Extrai a mensagem de erro do HTML retornado
+                    const errorAlert = doc.querySelector('.alert-danger');
+                    if (errorAlert) {
+                        const errorText = errorAlert.textContent.replace('×', '').trim();
+                        alert(errorText);
+                    } else {
+                        alert('Erro ao processar o arquivo. Por favor, tente novamente.');
+                    }
+                    
+                    // Limpa o input
+                    fileInput.value = '';
+                    convertBtn.disabled = true;
                 }
             } catch (error) {
                 console.error('Erro ao processar o arquivo:', error);

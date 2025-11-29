@@ -4,7 +4,22 @@ Este diretório contém as migrations do Entity Framework Core para o schema de 
 
 ## Comandos Úteis
 
-### Criar Nova Migration
+### Comandos do Makefile (Recomendado)
+
+```bash
+# Aplicar migrações pendentes
+make migrate
+
+# Criar nova migração
+make migrate-create NAME=NomeDaMigration
+
+# Resetar banco (apaga e recria do zero)
+make migrate-reset
+```
+
+### Comandos Manuais (Alternativa)
+
+#### Criar Nova Migration
 ```bash
 cd src/MathFlow
 dotnet ef migrations add <NomeDaMigration> \
@@ -12,14 +27,14 @@ dotnet ef migrations add <NomeDaMigration> \
   --output-dir Infrastructure/IdentityServer/Data/Migrations
 ```
 
-### Aplicar Migrations
+#### Aplicar Migrations
 ```bash
-# Desenvolvimento (automático no startup)
-dotnet run
-
-# Manual
+cd src/MathFlow
 dotnet ef database update --context ApplicationDbContext
 ```
+
+**⚠️ IMPORTANTE**: As migrações **NÃO** são aplicadas automaticamente ao iniciar a aplicação.  
+Você deve executar `make migrate` após resetar o banco ou criar novas migrações.
 
 ### Reverter Migration
 ```bash
@@ -41,9 +56,10 @@ dotnet ef migrations script --context ApplicationDbContext \
   --idempotent --output identity-schema-idempotent.sql
 ```
 
-## Migrations Aplicadas
+## Migrations Existentes
 
-- `InitialIdentity`: Schema inicial com tabelas Users, Roles, UserRoles, UserClaims, UserLogins, RoleClaims, UserTokens
+- `20251102175606_InitialIdentity`: Schema inicial com tabelas Users, Roles, UserRoles, UserClaims, UserLogins, RoleClaims, UserTokens
+- `20251112214430_AddDisplayNameToApplicationUser`: Adiciona campo DisplayName à tabela Users
 
 ## Produção
 

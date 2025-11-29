@@ -1,4 +1,4 @@
-.PHONY: help build run test docker-infra-up docker-infra-down docker-up docker-down docker-up-all docker-down-all docker-logs docker-restart clean up down logs restart
+.PHONY: help build run test docker-infra-up docker-infra-down docker-up docker-down docker-up-all docker-down-all docker-logs docker-restart clean up down logs restart migrate migrate-create migrate-reset
 
 # Default target
 help:
@@ -11,6 +11,11 @@ help:
 	@echo "  make run                - Executa a aplicação localmente"
 	@echo "  make test               - Executa testes"
 	@echo "  make clean              - Limpa arquivos de build"
+	@echo ""
+	@echo "🗄️  Database & Migrations:"
+	@echo "  make migrate            - Aplica migrações pendentes no banco"
+	@echo "  make migrate-create     - Cria nova migração (ex: make migrate-create NAME=AddNewField)"
+	@echo "  make migrate-reset      - Remove banco e recria do zero (⚠️  CUIDADO: apaga dados!)"
 	@echo ""
 	@echo "🐳 Docker - Infraestrutura:"
 	@echo "  make docker-infra-up    - Sobe apenas infraestrutura (Postgres, OTEL, Grafana, etc)"
@@ -52,6 +57,35 @@ clean:
 	@echo "🧹 Limpando arquivos de build..."
 	find . -type d \( -name "bin" -o -name "obj" \) -exec rm -rf {} +
 	@echo "✅ Limpeza concluída"
+
+# ============================================
+# Database & Migrations
+# ============================================
+
+migrate:
+	@echo "🗄️  Aplicando migrações no banco de dados..."
+	cd src/MathFlow && dotnet ef database update --context ApplicationDbContext
+	@echo "✅ Migrações aplicadas com sucesso"
+
+migrate-create:
+ifndef NAME
+	@echo "❌ Erro: Especifique o nome da migração"
+	@echo "   Exemplo: make migrate-create NAME=AddNewField"
+	@exit 1
+endif
+	@echo "📝 Criando nova migração: $(NAME)"
+	cd src/MathFlow && dotnet ef migrations add $(NAME) --context ApplicationDbContext --output-dir Infrastructure/IdentityServer/Data/Migrations
+	@echo "✅ Migração '$(NAME)' criada com sucesso"
+
+migrate-reset:
+	@echo "⚠️  ATENÇÃO: Isso irá APAGAR TODOS OS DADOS do banco!"
+	@echo "Pressione Ctrl+C para cancelar ou Enter para continuar..."
+	@read confirm
+	@echo "🗑️  Removendo banco de dados..."
+	cd src/MathFlow && dotnet ef database drop --context ApplicationDbContext --force
+	@echo "🔨 Recriando banco de dados..."
+	cd src/MathFlow && dotnet ef database update --context ApplicationDbContext
+	@echo "✅ Banco de dados resetado com sucesso"
 
 # ============================================
 # Docker - Infraestrutura

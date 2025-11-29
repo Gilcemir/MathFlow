@@ -2,6 +2,7 @@ using System.Xml.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using MathFlow.Infrastructure.Converters;
 using MathFlow.Shared.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace MathFlow.Application.Services.Converters;
 
@@ -11,10 +12,12 @@ public class WordProcessor
     private const string FormulaXmlNoParaName = "oMath";
     
     private readonly OmmlToMathMLConverter _ommlToMathMlConverter;
+    private readonly ILogger<WordProcessor> _logger;
     
-    public WordProcessor(OmmlToMathMLConverter ommlToMathMlConverter)
+    public WordProcessor(OmmlToMathMLConverter ommlToMathMlConverter, ILogger<WordProcessor> logger)
     {
         _ommlToMathMlConverter = ommlToMathMlConverter;
+        _logger = logger;
     }
     
     public async Task<Stream> ReplaceMathMLAsync(TempFileStream inputStream)
@@ -23,9 +26,11 @@ public class WordProcessor
 
         try
         {
+            _logger.LogInformation("Copiando arquivo temporário para processamento...");
             // Copia para arquivo de saída para processamento
             File.Copy(inputStream.TempFilePath, tempOutputPath, true);
 
+            _logger.LogInformation("Abrindo documento Word para processamento...");
             // Processa o documento
             using (var doc = WordprocessingDocument.Open(tempOutputPath, true))
             {
@@ -34,6 +39,7 @@ public class WordProcessor
                 if (mainPart == null)
                     throw new InvalidOperationException("Documento sem parte principal");
 
+                _logger.LogInformation("Carregando XML do documento...");
                 await using (var docStream = mainPart.GetStream(FileMode.Open, FileAccess.ReadWrite))
                 {
                     var docXml = XDocument.Load(docStream);
@@ -43,13 +49,17 @@ public class WordProcessor
                         .Where(e => e.Name.LocalName is FormulaXmlWithParaAttrName or FormulaXmlNoParaName)
                         .ToArray();
 
+                    _logger.LogInformation("Encontradas {Count} equações para converter", equations.Length);
+
                     for (int i = 0; i < equations.Length; i++)
                     {
+                        _logger.LogDebug("Convertendo equação {Current}/{Total}", i + 1, equations.Length);
                         var equation = await _ommlToMathMlConverter.ConvertAsync(equations[i].ToString());
                         var run = CreateXElementFromString(equation);
                         equations[i].ReplaceWith(run);
                     }
 
+                    _logger.LogInformation("Salvando documento processado...");
                     docStream.SetLength(0);
                     docStream.Position = 0;
                     docXml.Save(docStream);
@@ -59,12 +69,14 @@ public class WordProcessor
                 doc.Save();
             }
 
+            _logger.LogInformation("Documento processado com sucesso. Retornando stream...");
             // Retorna stream do arquivo processado (com limpeza automática)
             return new TempFileStream(tempOutputPath);
         }
-        catch
+        catch (Exception ex)
         {
-            throw new InvalidOperationException("Erro ao processar documento");
+            _logger.LogError(ex, "Erro ao processar documento: {Message}", ex.Message);
+            throw new InvalidOperationException($"Erro ao processar documento: {ex.Message}", ex);
         }
     }
 

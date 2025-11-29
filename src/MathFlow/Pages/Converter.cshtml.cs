@@ -40,8 +40,8 @@ public class Converter : PageModel
             return Page();
         }
 
-        // Limite de tamanho (ex: 10MB)
-        const long maxFileSize = 10 * 1024 * 1024;
+        // Limite de tamanho (50MB)
+        const long maxFileSize = 50 * 1024 * 1024;
         if (uploadedFile.Length > maxFileSize)
         {
             ErrorMessage = $"O arquivo é muito grande. Tamanho máximo: {maxFileSize / 1024 / 1024}MB";
@@ -50,11 +50,18 @@ public class Converter : PageModel
 
         try
         {
+            _logger.LogInformation("Iniciando processamento do arquivo: {FileName}, Tamanho: {Size} bytes", 
+                uploadedFile.FileName, uploadedFile.Length);
+            
             var stopwatch = Stopwatch.StartNew();
 
             await using var inputStream = await uploadedFile.ToStreamAsync();
+            
+            _logger.LogInformation("Stream temporário criado. Iniciando conversão...");
 
             var result = await _wordProcessor.ReplaceMathMLAsync(inputStream);
+            
+            _logger.LogInformation("Conversão concluída. Preparando download...");
 
             stopwatch.Stop();
             
@@ -78,7 +85,8 @@ public class Converter : PageModel
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao processar documento");
+            _logger.LogError(ex, "Erro inesperado ao processar documento: {Message}. StackTrace: {StackTrace}", 
+                ex.Message, ex.StackTrace);
             ErrorMessage = $"Erro inesperado: {ex.Message}";
             return Page();
         }
